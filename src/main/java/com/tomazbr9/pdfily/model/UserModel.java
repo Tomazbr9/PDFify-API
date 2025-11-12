@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,9 @@ public class UserModel implements Serializable {
     private String username;
     private String email;
     private String password;
+
+    private LocalDate created_at;
+    private LocalDate updated_at;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<RoleModel> roles;
