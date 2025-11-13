@@ -47,6 +47,7 @@ public class FileUploadService {
         Path dirPath = Paths.get(uploadDir);
 
         try {
+
             if (!Files.exists(dirPath)) {
                 Files.createDirectories(dirPath);
             }
