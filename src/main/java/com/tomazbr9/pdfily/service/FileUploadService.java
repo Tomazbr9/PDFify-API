@@ -1,6 +1,5 @@
 package com.tomazbr9.pdfily.service;
 
-import com.tomazbr9.pdfily.controller.FileUploadController;
 import com.tomazbr9.pdfily.dto.file.FileResponseDTO;
 import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.model.UserModel;
@@ -62,7 +61,6 @@ public class FileUploadService {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             logger.info("Arquivo '{}' salvo temporariamente em: {}", file.getOriginalFilename(), filePath);
-
 
             FileUploadModel fileUploadModel = new FileUploadModel(
                     UUID.randomUUID(),
