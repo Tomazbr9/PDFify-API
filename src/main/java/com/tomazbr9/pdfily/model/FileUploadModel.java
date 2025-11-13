@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,10 +26,9 @@ public class FileUploadModel implements Serializable {
     private String filePath;
     private Long fileSize;
 
-    private LocalDate created_at;
-    private LocalDate updated_at;
+    private LocalDateTime updated_at;
 
     @ManyToOne
     @JoinColumn(name = "tb_user")
-    private UUID userId;
+    private UserModel user;
 }

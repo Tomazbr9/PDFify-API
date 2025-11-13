@@ -1,9 +1,9 @@
 package com.tomazbr9.pdfily.controller;
 
-import com.tomazbr9.pdfily.dto.user.UserResponseDTO;
+import com.tomazbr9.pdfily.dto.file.FileResponseDTO;
 import com.tomazbr9.pdfily.service.FileUploadService;
-import com.tomazbr9.pdfily.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,19 +12,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/files")
-public class FileUploadModel {
+public class FileUploadController {
 
     @Autowired
     FileUploadService service;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal UserDetails user){
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal UserDetails userDetails){
 
+        FileResponseDTO response = service.uploadFile(file, userDetails);
 
-
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-
 
 }
