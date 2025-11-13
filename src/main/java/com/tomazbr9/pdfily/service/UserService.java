@@ -1,6 +1,6 @@
 package com.tomazbr9.pdfily.service;
 
-import com.tomazbr9.pdfily.dto.user.UserResponseDTO;
+import com.tomazbr9.pdfily.dto.userDTO.UserResponseDTO;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

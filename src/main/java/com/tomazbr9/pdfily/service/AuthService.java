@@ -1,8 +1,8 @@
 package com.tomazbr9.pdfily.service;
 
-import com.tomazbr9.pdfily.dto.auth.JwtTokenDTO;
-import com.tomazbr9.pdfily.dto.auth.LoginDTO;
-import com.tomazbr9.pdfily.dto.user.UserRequestDTO;
+import com.tomazbr9.pdfily.dto.authDTO.JwtTokenDTO;
+import com.tomazbr9.pdfily.dto.authDTO.LoginDTO;
+import com.tomazbr9.pdfily.dto.userDTO.UserRequestDTO;
 import com.tomazbr9.pdfily.model.RoleModel;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.RoleRepository;

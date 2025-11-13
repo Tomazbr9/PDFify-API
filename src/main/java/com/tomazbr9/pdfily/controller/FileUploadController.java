@@ -1,6 +1,6 @@
 package com.tomazbr9.pdfily.controller;
 
-import com.tomazbr9.pdfily.dto.file.FileResponseDTO;
+import com.tomazbr9.pdfily.dto.fileDTO.FileResponseDTO;
 import com.tomazbr9.pdfily.service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

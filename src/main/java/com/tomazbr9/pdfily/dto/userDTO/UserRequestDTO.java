@@ -1,4 +1,4 @@
-package com.tomazbr9.pdfily.dto.user;
+package com.tomazbr9.pdfily.dto.userDTO;
 
 import com.tomazbr9.pdfily.enums.RoleName;
 

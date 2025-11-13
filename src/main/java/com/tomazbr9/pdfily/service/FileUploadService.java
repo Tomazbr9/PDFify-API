@@ -1,6 +1,6 @@
 package com.tomazbr9.pdfily.service;
 
-import com.tomazbr9.pdfily.dto.file.FileResponseDTO;
+import com.tomazbr9.pdfily.dto.fileDTO.FileResponseDTO;
 import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;

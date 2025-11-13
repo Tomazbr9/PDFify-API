@@ -1,6 +1,6 @@
 package com.tomazbr9.pdfily.exception.handler;
 
-import com.tomazbr9.pdfily.dto.exception.ErrorResponseDTO;
+import com.tomazbr9.pdfily.dto.exceptionDTO.ErrorResponseDTO;
 import com.tomazbr9.pdfily.exception.EmptyFileException;
 import com.tomazbr9.pdfily.exception.FileStorageException;
 import jakarta.servlet.http.HttpServletRequest;

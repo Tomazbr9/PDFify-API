@@ -1,4 +1,4 @@
-package com.tomazbr9.pdfily.dto.exception;
+package com.tomazbr9.pdfily.dto.exceptionDTO;
 
 import java.time.LocalDateTime;
 
