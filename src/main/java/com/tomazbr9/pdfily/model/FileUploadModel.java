@@ -20,7 +20,7 @@ public class FileUploadModel implements Serializable {
     private static final long seriaVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
     private String originalName;
     private String filePath;
@@ -29,6 +29,6 @@ public class FileUploadModel implements Serializable {
     private LocalDateTime updated_at;
 
     @ManyToOne
-    @JoinColumn(name = "tb_user")
+    @JoinColumn(name = "tb_user", nullable = false)
     private UserModel user;
 }

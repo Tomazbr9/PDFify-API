@@ -19,7 +19,7 @@ public class RoleModel implements Serializable {
     private static final long seriaVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     @Enumerated(EnumType.STRING)

@@ -1,14 +1,13 @@
 package com.tomazbr9.pdfily.repository;
 
+import com.tomazbr9.pdfily.model.ConversionModel;
 import com.tomazbr9.pdfily.model.FileUploadModel;
-import com.tomazbr9.pdfily.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FileUploadRepository extends JpaRepository<FileUploadModel, UUID> {
+public interface ConversionRepository extends JpaRepository<ConversionModel, UUID> {
 
 }
