@@ -6,5 +6,7 @@ public enum TargetFormat {
     JPG,
     JPEG,
     TXT,
-    HTML
+    HTML,
+    XLSX,
+    PPTX
 }
