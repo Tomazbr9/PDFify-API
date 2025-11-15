@@ -1,6 +1,7 @@
 package com.tomazbr9.pdfily.service;
 
 import com.tomazbr9.pdfily.dto.fileDTO.FileResponseDTO;
+import com.tomazbr9.pdfily.enums.TargetFormat;
 import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
@@ -89,6 +90,14 @@ public class FileUploadService {
 
     private UserModel findUserByUsername(String username){
         return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    }
+
+    private void fileFormatValidator(String filename){
+        String extension = filename.substring(filename.lastIndexOf(".") + 1);
+
+        if(!TargetFormat.isSupported(extension)){
+            throw new RuntimeException("Formato não suportado: " + extension);
+        }
     }
 
 }
