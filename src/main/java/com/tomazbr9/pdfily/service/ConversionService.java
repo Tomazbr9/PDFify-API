@@ -44,7 +44,7 @@ public class ConversionService {
 
             ConversionModel conversionModel = ConversionModel.builder()
                     .fileUploadModel(fileUploadModel)
-                    .targetFormat(TargetFormat.PDF.name())
+                    .targetFormat(TargetFormat.PDF)
                     .status(StatusName.SUCCESS)
                     .outputPath(output.toString())
                     .createdAt(LocalDateTime.now())

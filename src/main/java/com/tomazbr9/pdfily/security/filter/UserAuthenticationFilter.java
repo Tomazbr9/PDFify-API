@@ -52,7 +52,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
                     // Cria a autenticação baseada no usuário e suas permissões
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails.getUsername(), null, userDetails.getAuthorities());
+                            userDetails, null, userDetails.getAuthorities());
 
                     // Define a autenticação no contexto de segurança
                     SecurityContextHolder.getContext().setAuthentication(authentication);

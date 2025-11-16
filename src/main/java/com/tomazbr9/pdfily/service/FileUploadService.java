@@ -45,6 +45,8 @@ public class FileUploadService {
             throw new RuntimeException("O arquivo enviado está vazio ou é nulo");
         }
 
+        fileFormatValidator(file.getOriginalFilename());
+
         Path dirPath = Paths.get(uploadDir);
 
         try {
@@ -64,14 +66,13 @@ public class FileUploadService {
 
             logger.info("Arquivo '{}' salvo temporariamente em: {}", file.getOriginalFilename(), filePath);
 
-            FileUploadModel fileUploadModel = new FileUploadModel(
-                    UUID.randomUUID(),
-                    file.getOriginalFilename(),
-                    filePath.toString(),
-                    file.getSize(),
-                    LocalDateTime.now(),
-                    user
-            );
+            FileUploadModel fileUploadModel = FileUploadModel.builder()
+                    .originalName(file.getOriginalFilename())
+                    .filePath(file.toString())
+                    .fileSize(file.getSize())
+                    .updated_at(LocalDateTime.now())
+                    .user(user)
+                    .build();
 
             fileUploadRepository.save(fileUploadModel);
 
@@ -96,6 +97,7 @@ public class FileUploadService {
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
 
         if(!TargetFormat.isSupported(extension)){
+            logger.info("Formato do arquivo enviado não é suportado: " + extension);
             throw new RuntimeException("Formato não suportado: " + extension);
         }
     }

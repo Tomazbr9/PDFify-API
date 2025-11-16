@@ -42,7 +42,6 @@ public class AuthService {
 
         UserModel user = UserModel.builder()
                 .username(request.username())
-                .email(request.email())
                 .password(securityConfiguration.passwordEncoder().encode(request.password()))
                 .roles(List.of(role))
                 .build();

@@ -1,6 +1,7 @@
 package com.tomazbr9.pdfily.model;
 
 import com.tomazbr9.pdfily.enums.StatusName;
+import com.tomazbr9.pdfily.enums.TargetFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +27,7 @@ public class ConversionModel {
     private FileUploadModel fileUploadModel;
 
     @Enumerated(EnumType.STRING)
-    private String targetFormat;
+    private TargetFormat targetFormat;
 
     @Enumerated(EnumType.STRING)
     private StatusName status;
