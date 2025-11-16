@@ -68,18 +68,18 @@ public class FileUploadService {
 
             FileUploadModel fileUploadModel = FileUploadModel.builder()
                     .originalName(file.getOriginalFilename())
-                    .filePath(file.toString())
+                    .filePath(filePath.toString())
                     .fileSize(file.getSize())
                     .updated_at(LocalDateTime.now())
                     .user(user)
                     .build();
 
-            fileUploadRepository.save(fileUploadModel);
+            FileUploadModel saved = fileUploadRepository.save(fileUploadModel);
 
             return new FileResponseDTO(
-                    fileUploadModel.getId(),
-                    fileUploadModel.getOriginalName(),
-                    fileUploadModel.getFilePath()
+                    saved.getId(),
+                    saved.getOriginalName(),
+                    saved.getFilePath()
             );
 
         } catch (IOException error) {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -32,6 +33,11 @@ public class ConversionService {
         FileUploadModel fileUploadModel = fileUploadRepository.findById(request.fileId()).orElseThrow(() -> new RuntimeException("Arquivo não encontrado."));
 
         Path input = Paths.get(fileUploadModel.getFilePath());
+
+        if (!Files.exists(input)) {
+            throw new RuntimeException("Arquivo temporário expirado ou inexistente.");
+        }
+
 
         String outputFilename = UUID.randomUUID() + ".pdf";
 
@@ -55,7 +61,7 @@ public class ConversionService {
             return new ConvertResponseDTO(saved.getId(), saved.getStatus().name());
 
         } catch (Exception error) {
-            throw new RuntimeException("Erro ao converter arquivo");
+            throw new RuntimeException("Erro ao converter arquivo.", error);
         }
     }
 
