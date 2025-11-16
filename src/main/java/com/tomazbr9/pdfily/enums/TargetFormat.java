@@ -7,6 +7,7 @@ public enum TargetFormat {
     JPEG,
     TXT,
     HTML,
+    DOCX,
     XLSX,
     PPTX;
 

@@ -8,8 +8,9 @@ import com.tomazbr9.pdfily.model.ConversionModel;
 import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.repository.ConversionRepository;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
-import org.jodconverter.local.JodConverter;
+import org.jodconverter.core.DocumentConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@DependsOn("officeManager")
 public class ConversionService {
+
+    @Autowired
+    DocumentConverter converter;
 
     @Autowired
     FileUploadRepository fileUploadRepository;
@@ -44,7 +49,8 @@ public class ConversionService {
         Path output = input.getParent().resolve(outputFilename);
 
         try {
-            JodConverter.convert(input.toFile())
+            converter.convert(
+                    input.toFile())
                     .to(output.toFile())
                     .execute();
 

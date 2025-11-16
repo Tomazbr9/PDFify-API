@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ConversionModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     @OneToOne
