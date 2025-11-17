@@ -30,6 +30,21 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(FileUploadNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFileUploadNotFoundException(FileUploadNotFoundException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceDoesNotBelongToTheAuthenticatedUser.class)
+    public ResponseEntity<ErrorResponseDTO> handleResourceDoesNotBelongToTheAuthenticatedUser(ResourceDoesNotBelongToTheAuthenticatedUser exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConvertingFileException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFileUploadNotFoundException(ConvertingFileException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(InvalidFileNameException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidFileNameException(InvalidFileNameException exception, HttpServletRequest request){
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST);
@@ -42,6 +57,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FailedToSaveTemporaryFileException.class)
     public ResponseEntity<ErrorResponseDTO> handleFailedToSaveTemporaryFileException(FailedToSaveTemporaryFileException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ExpiredOrNonExistentFile.class)
+    public ResponseEntity<ErrorResponseDTO> handleExpiredOrNonExistentFile(ExpiredOrNonExistentFile exception, HttpServletRequest request){
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

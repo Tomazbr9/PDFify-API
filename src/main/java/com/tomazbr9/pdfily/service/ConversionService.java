@@ -4,11 +4,15 @@ import com.tomazbr9.pdfily.dto.conversionDTO.ConvertRequestDTO;
 import com.tomazbr9.pdfily.dto.conversionDTO.ConvertResponseDTO;
 import com.tomazbr9.pdfily.enums.StatusName;
 import com.tomazbr9.pdfily.enums.TargetFormat;
+import com.tomazbr9.pdfily.exception.*;
 import com.tomazbr9.pdfily.model.ConversionModel;
 import com.tomazbr9.pdfily.model.FileUploadModel;
+import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.ConversionRepository;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
+import com.tomazbr9.pdfily.repository.UserRepository;
 import org.jodconverter.core.DocumentConverter;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,18 +37,24 @@ public class ConversionService {
     @Autowired
     ConversionRepository conversionRepository;
 
-    public ConvertResponseDTO convertToPDF(ConvertRequestDTO request, UserDetails user){
+    @Autowired
+    UserRepository userRepository;
 
-        FileUploadModel fileUploadModel = fileUploadRepository.findById(request.fileId()).orElseThrow(() -> new RuntimeException("Arquivo não encontrado."));
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConversionService.class);
+
+    public ConvertResponseDTO convertToPDF(ConvertRequestDTO request, UserDetails userDetails){
+
+        FileUploadModel fileUploadModel = getFileUpload(request.fileId());
+
+        UserModel user = getUser(userDetails.getUsername());
+
+        validatedIfFileBelongsAuthenticatedUser(fileUploadModel, user);
 
         Path input = Paths.get(fileUploadModel.getFilePath());
 
-        if (!Files.exists(input)) {
-            throw new RuntimeException("Arquivo temporário expirado ou inexistente.");
-        }
+        validateFileExists(input);
 
-
-        String outputFilename = UUID.randomUUID() + ".pdf";
+        String outputFilename = generateSafeFilenamePDF();
 
         Path output = input.getParent().resolve(outputFilename);
 
@@ -54,21 +64,52 @@ public class ConversionService {
                     .to(output.toFile())
                     .execute();
 
-            ConversionModel conversionModel = ConversionModel.builder()
-                    .fileUploadModel(fileUploadModel)
-                    .targetFormat(TargetFormat.PDF)
-                    .status(StatusName.SUCCESS)
-                    .outputPath(output.toString())
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            ConversionModel saved = conversionRepository.save(conversionModel);
-
+            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output);
             return new ConvertResponseDTO(saved.getId(), saved.getStatus().name());
 
         } catch (Exception error) {
-            throw new RuntimeException("Erro ao converter arquivo.", error);
+            logger.error("Erro ao converter o arquivo: {}", fileUploadModel.getOriginalName(), error);
+            throw new ConvertingFileException("Erro ao converter arquivo.");
         }
+    }
+
+    private FileUploadModel getFileUpload(UUID fileId){
+        return fileUploadRepository.findById(fileId).orElseThrow(() -> new FileUploadNotFoundException("Arquivo não encontrado."));
+    }
+
+    private UserModel getUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+    }
+
+    private void validatedIfFileBelongsAuthenticatedUser(FileUploadModel fileUploadModel, UserModel user) {
+        if (!fileUploadModel.getUser().getUsername().equals(user.getUsername())){
+            throw new ResourceDoesNotBelongToTheAuthenticatedUser("Você não tem permissão para converter esse arquivo");
+        }
+    }
+
+    private void validateFileExists(Path input){
+        if (!Files.exists(input)) {
+            logger.error("Arquivo temporário expirado ou inexistente");
+            throw new ExpiredOrNonExistentFile("Arquivo temporário expirado ou inexistente.");
+        }
+    }
+
+    private String generateSafeFilenamePDF(){
+        return UUID.randomUUID().toString() + ".pdf";
+    }
+
+    private ConversionModel savedConvertedFileMetaData(FileUploadModel fileUploadModel, Path output){
+
+        ConversionModel conversionModel = ConversionModel.builder()
+                .fileUploadModel(fileUploadModel)
+                .targetFormat(TargetFormat.PDF)
+                .status(StatusName.SUCCESS)
+                .outputPath(output.toString())
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return conversionRepository.save(conversionModel);
+
     }
 
 
