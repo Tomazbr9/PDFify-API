@@ -4,6 +4,5 @@ import java.util.UUID;
 
 public record FileResponseDTO(
    UUID id,
-   String originalName,
-   String storedName
+   String originalName
 ) {}

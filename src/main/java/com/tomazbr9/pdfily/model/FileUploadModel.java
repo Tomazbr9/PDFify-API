@@ -26,7 +26,7 @@ public class FileUploadModel implements Serializable {
     private String filePath;
     private Long fileSize;
 
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "tb_user", nullable = false)

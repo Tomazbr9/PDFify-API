@@ -1,8 +1,7 @@
 package com.tomazbr9.pdfily.exception.handler;
 
 import com.tomazbr9.pdfily.dto.exceptionDTO.ErrorResponseDTO;
-import com.tomazbr9.pdfily.exception.EmptyFileException;
-import com.tomazbr9.pdfily.exception.FileStorageException;
+import com.tomazbr9.pdfily.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmptyFileException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmptyExceptionException(EmptyFileException exception, HttpServletRequest request){
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFileNameException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidFileNameException(InvalidFileNameException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException (UserNotFoundException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FailedToSaveTemporaryFileException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFailedToSaveTemporaryFileException(FailedToSaveTemporaryFileException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UnsupportedFileFormatException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUnsupportedFileFormatException(UnsupportedFileFormatException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

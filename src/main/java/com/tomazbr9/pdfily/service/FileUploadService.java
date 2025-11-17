@@ -2,10 +2,12 @@ package com.tomazbr9.pdfily.service;
 
 import com.tomazbr9.pdfily.dto.fileDTO.FileResponseDTO;
 import com.tomazbr9.pdfily.enums.TargetFormat;
+import com.tomazbr9.pdfily.exception.*;
 import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.repository.UserRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,68 +39,120 @@ public class FileUploadService {
 
     public FileResponseDTO uploadFile(MultipartFile file, UserDetails userDetails){
 
-        UserModel user = findUserByUsername(userDetails.getUsername());
+        validateFileNotEmpty(file);
 
+        String originalFileName = validateAndGetOriginalName(file);
+
+        UserModel user = getUser(userDetails.getUsername());
+
+        String extension = getSafeExtension(originalFileName);
+
+        String newFileName = generateSafeFilename(extension);
+
+        Path dirPath = Path.of(uploadDir);
+        Path filePath = dirPath.resolve(newFileName);
+
+        createDirectoryIfNeeded(dirPath);
+
+        saveFileInDisk(file, filePath);
+
+        FileUploadModel saved = savedFileMetaData(originalFileName, filePath, file.getSize(), user);
+
+        logger.info("Arquivo '{}' salvo temporariamente em: {}", originalFileName, filePath);
+
+        return new FileResponseDTO(
+                saved.getId(),
+                saved.getOriginalName()
+        );
+
+    }
+
+    // Retorna o usuário autenticado
+    private UserModel getUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
+    }
+
+    // Verifica se o arquivo enviado é nulo ou vazio
+    private void validateFileNotEmpty(MultipartFile file){
         if(file == null || file.isEmpty()) {
             logger.warn("O arquivo enviado está vazio ou é nulo");
-            throw new RuntimeException("O arquivo enviado está vazio ou é nulo");
+            throw new EmptyFileException("O arquivo enviado está vazio ou é nulo");
+        }
+    }
+
+    // Verifica se o nome do arquivo é vazio ou não
+    private String validateAndGetOriginalName(MultipartFile file){
+
+        String originalName = file.getOriginalFilename();
+
+        if(originalName == null){
+            logger.warn("Arquivo sem nome.");
+            throw new InvalidFileNameException("Arquivo sem nome.");
         }
 
-        fileFormatValidator(file.getOriginalFilename());
+        return originalName;
 
-        Path dirPath = Paths.get(uploadDir);
+    }
 
+    // Obtêm a extensão do nome do arquivo
+    private String getSafeExtension(String originalName){
+
+        String extension = FilenameUtils.getExtension(originalName);
+
+        if(extension == null || extension.isBlank()){
+            logger.warn("O arquivo {} não possui extensão.", originalName);
+            throw new UnsupportedFileFormatException("O arquivo não possui extensão.");
+        }
+
+        if(!TargetFormat.isSupported(extension)){
+            logger.warn("Formato do arquivo enviado não é suportado: " + extension);
+            throw new UnsupportedFileFormatException("Formato não suportado: " + extension);
+        }
+
+        return extension.toLowerCase();
+    }
+
+    // Gera um novo nome para o arquivo enviado
+    private String generateSafeFilename(String extension){
+        return UUID.randomUUID().toString() + "." + extension;
+    }
+
+    // Cria um diretorio temporario caso ele não exista
+    private void createDirectoryIfNeeded(Path dirPath){
         try {
-
             if (!Files.exists(dirPath)) {
                 Files.createDirectories(dirPath);
             }
+        }
+        catch(IOException error){
+            logger.error("Erro ao criar diretorio: '{}'", dirPath, error);
+            throw new FailedToSaveTemporaryFileException("Erro ao criar diretorio temporario.");
+            }
+    }
 
-            // Gera um nome seguro e praticamente único para o arquivo que será salvo.
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            // Resolve o nome do arquivo em relação ao diretório, produzindo o caminho completo onde o arquivo será escrito.
-            Path filePath = dirPath.resolve(filename);
-
-            // Copia o conteúdo do MultipartFile para o filePath.
+    // Copia o conteudo do arquivo enviado para o diretorio
+    private void saveFileInDisk(MultipartFile file, Path filePath) {
+        try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            logger.info("Arquivo '{}' salvo temporariamente em: {}", file.getOriginalFilename(), filePath);
-
-            FileUploadModel fileUploadModel = FileUploadModel.builder()
-                    .originalName(file.getOriginalFilename())
-                    .filePath(filePath.toString())
-                    .fileSize(file.getSize())
-                    .updated_at(LocalDateTime.now())
-                    .user(user)
-                    .build();
-
-            FileUploadModel saved = fileUploadRepository.save(fileUploadModel);
-
-            return new FileResponseDTO(
-                    saved.getId(),
-                    saved.getOriginalName(),
-                    saved.getFilePath()
-            );
-
-        } catch (IOException error) {
-            logger.error("Erro ao salvar o arquivo '{}'", file.getOriginalFilename(), error);
-            throw new RuntimeException("Falha ao salvar arquivo temporário", error);
+        } catch (IOException error){
+            logger.error("Erro ao salvar arquivo {} em disco.", filePath, error);
+            throw new FailedToSaveTemporaryFileException("Falha ao salvar arquivo temporário.");
         }
-
     }
 
-    private UserModel findUserByUsername(String username){
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-    }
+    // Salva as informações do arquivo enviao no banco de dados
+    private FileUploadModel savedFileMetaData (String originalName, Path filePath, long size, UserModel user){
 
-    private void fileFormatValidator(String filename){
-        String extension = filename.substring(filename.lastIndexOf(".") + 1);
+        FileUploadModel fileUploadModel = FileUploadModel.builder()
+                .originalName(originalName)
+                .filePath(filePath.toString())
+                .fileSize(size)
+                .createdAt(LocalDateTime.now())
+                .user(user)
+                .build();
 
-        if(!TargetFormat.isSupported(extension)){
-            logger.info("Formato do arquivo enviado não é suportado: " + extension);
-            throw new RuntimeException("Formato não suportado: " + extension);
-        }
+        return fileUploadRepository.save(fileUploadModel);
+
     }
 
 }
