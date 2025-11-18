@@ -65,6 +65,9 @@ public class ConversionService {
                     .execute();
 
             ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output);
+
+            logger.info("Arquivo {} convertido com sucesso.", output);
+
             return new ConvertResponseDTO(saved.getId(), saved.getStatus().name());
 
         } catch (Exception error) {
@@ -74,15 +77,19 @@ public class ConversionService {
     }
 
     private FileUploadModel getFileUpload(UUID fileId){
+        logger.warn("Arquivo com id: {} não foi encontrado", fileId);
         return fileUploadRepository.findById(fileId).orElseThrow(() -> new FileUploadNotFoundException("Arquivo não encontrado."));
     }
 
     private UserModel getUser(String username){
+        logger.warn("Usuário {} não foi encontrado", username);
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
     }
 
     private void validatedIfFileBelongsAuthenticatedUser(FileUploadModel fileUploadModel, UserModel user) {
-        if (!fileUploadModel.getUser().getUsername().equals(user.getUsername())){
+        String username = fileUploadModel.getUser().getUsername();
+        if (!username.equals(user.getUsername())){
+            logger.info("Usuário {} sem permissão para converter arquivo.", username);
             throw new ResourceDoesNotBelongToTheAuthenticatedUser("Você não tem permissão para converter esse arquivo");
         }
     }
