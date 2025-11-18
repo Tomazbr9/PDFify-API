@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileUploadNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleFileUploadNotFoundException(FileUploadNotFoundException exception, HttpServletRequest request){
+        logger.warn("Arquivo não foi encontrado");
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
     }
 
@@ -52,6 +53,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleUserNotFoundException (UserNotFoundException exception, HttpServletRequest request){
+        logger.warn("Usuário não foi encontrado");
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
     }
 

@@ -77,12 +77,10 @@ public class ConversionService {
     }
 
     private FileUploadModel getFileUpload(UUID fileId){
-        logger.warn("Arquivo com id: {} não foi encontrado", fileId);
         return fileUploadRepository.findById(fileId).orElseThrow(() -> new FileUploadNotFoundException("Arquivo não encontrado."));
     }
 
     private UserModel getUser(String username){
-        logger.warn("Usuário {} não foi encontrado", username);
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
     }
 
