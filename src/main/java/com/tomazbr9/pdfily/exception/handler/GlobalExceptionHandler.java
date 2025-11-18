@@ -70,6 +70,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
+    @ExceptionHandler(ClearTemporaryFilesException.class)
+    public ResponseEntity<ErrorResponseDTO> handleClearTemporaryFilesException(ClearTemporaryFilesException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException exception) {
