@@ -77,6 +77,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ConversionNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleConversionNotFoundException(ConversionNotFoundException exception, HttpServletRequest request){
+        logger.warn("Conversão não encontrada.");
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(
             MethodArgumentNotValidException exception) {

@@ -7,6 +7,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_user")
@@ -22,7 +23,7 @@ public class UserModel implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private UUID id;
     private String username;
     private String email;
     private String password;
