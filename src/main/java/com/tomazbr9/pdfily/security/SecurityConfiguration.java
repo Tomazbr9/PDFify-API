@@ -31,7 +31,10 @@ public class SecurityConfiguration {
     public static final String[] ENDPOINTS_USER = {
 
             "/api/v1/files/upload",
-            "/api/v1/convert"
+
+            "/api/v1/convert",
+
+            "/api/v1/download/start/**"
 
 
     };

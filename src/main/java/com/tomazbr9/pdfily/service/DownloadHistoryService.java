@@ -34,9 +34,9 @@ public class DownloadHistoryService {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DownloadHistoryService.class);
 
-    public DownloadResponseDTO saveDownloadToHistory(DownloadRequestDTO request, UserDetails userDetails){
+    public void saveDownloadToHistory(UUID conversionId, UserDetails userDetails){
 
-        ConversionModel conversion = getConversion(request.conversionId());
+        ConversionModel conversion = getConversion(conversionId);
         UserModel user = getUser(userDetails.getUsername());
 
         validateIfUserCanDownload(conversion, user);
@@ -44,8 +44,6 @@ public class DownloadHistoryService {
         saveDownload(conversion, user);
 
         logger.info("Download salvo no historico com sucesso!");
-
-        return new DownloadResponseDTO(conversion.getId());
 
     }
 
@@ -76,5 +74,6 @@ public class DownloadHistoryService {
         downloadHistoryRepository.save(downloadHistoryModel);
 
     }
+
 
 }

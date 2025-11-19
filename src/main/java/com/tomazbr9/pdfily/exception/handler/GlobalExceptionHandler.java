@@ -77,6 +77,21 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(PrepareFileToDownloadException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePrepareFileToDownloadException(PrepareFileToDownloadException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FileSizeException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFileSizeException(FileSizeException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ReadsFileInBytsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleReadsFileInBytsException (ReadsFileInBytsException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ConversionNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleConversionNotFoundException(ConversionNotFoundException exception, HttpServletRequest request){
         logger.warn("Conversão não encontrada.");
