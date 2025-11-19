@@ -29,6 +29,6 @@ public class FileUploadModel implements Serializable {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "tb_user", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserModel user;
 }

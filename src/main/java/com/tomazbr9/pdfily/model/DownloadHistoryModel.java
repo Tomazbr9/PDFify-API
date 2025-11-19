@@ -1,10 +1,7 @@
 package com.tomazbr9.pdfily.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,10 +21,14 @@ public class DownloadHistoryModel {
     @GeneratedValue
     private UUID id;
 
-    private UUID conversionId;
-
-    private UserModel userID;
+    @ManyToOne
+    @JoinColumn(name = "conversion_id")
+    private ConversionModel conversion;
 
     private LocalDateTime downloadedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 
 }

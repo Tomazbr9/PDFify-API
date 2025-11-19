@@ -66,8 +66,8 @@ public class DownloadHistoryService {
     private void saveDownload(ConversionModel conversion, UserModel user){
 
         DownloadHistoryModel downloadHistoryModel = DownloadHistoryModel.builder()
-                .conversionId(conversion.getId())
-                .userID(user)
+                .conversion(conversion)
+                .user(user)
                 .downloadedAt(LocalDateTime.now())
                 .build();
 

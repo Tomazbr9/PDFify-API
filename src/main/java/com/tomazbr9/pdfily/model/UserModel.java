@@ -1,11 +1,13 @@
 package com.tomazbr9.pdfily.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +32,14 @@ public class UserModel implements Serializable {
 
     private LocalDate created_at;
     private LocalDate updated_at;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DownloadHistoryModel> downloadsHistoryModel = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FileUploadModel> fileUploadsModel = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<RoleModel> roles;
