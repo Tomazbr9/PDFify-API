@@ -11,6 +11,7 @@ import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.ConversionRepository;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.jodconverter.core.DocumentConverter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class ConversionService {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConversionService.class);
 
+    @Transactional
     public ConvertResponseDTO convertToPDF(ConvertRequestDTO request, UserDetails userDetails){
 
         FileUploadModel fileUploadModel = getFileUpload(request.fileId());
@@ -64,7 +66,7 @@ public class ConversionService {
                     .to(output.toFile())
                     .execute();
 
-            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output);
+            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output, StatusName.SUCCESS);
 
             logger.info("Arquivo {} convertido com sucesso.", output);
 
@@ -72,6 +74,7 @@ public class ConversionService {
 
         } catch (Exception error) {
             logger.error("Erro ao converter o arquivo: {}", fileUploadModel.getOriginalName(), error);
+            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output, StatusName.FAILURE);
             throw new ConvertingFileException("Erro ao converter arquivo.");
         }
     }
@@ -87,7 +90,7 @@ public class ConversionService {
     private void validatedIfFileBelongsAuthenticatedUser(FileUploadModel fileUploadModel, UserModel user) {
         String username = fileUploadModel.getUser().getUsername();
         if (!username.equals(user.getUsername())){
-            logger.info("Usuário {} sem permissão para converter arquivo.", username);
+            logger.info("Usuário {} sem permissão para converter arquivo.", user.getUsername());
             throw new ResourceDoesNotBelongToTheAuthenticatedUser("Você não tem permissão para converter esse arquivo");
         }
     }
@@ -103,12 +106,12 @@ public class ConversionService {
         return UUID.randomUUID().toString() + ".pdf";
     }
 
-    private ConversionModel savedConvertedFileMetaData(FileUploadModel fileUploadModel, Path output){
+    private ConversionModel savedConvertedFileMetaData(FileUploadModel fileUploadModel, Path output, StatusName status){
 
         ConversionModel conversionModel = ConversionModel.builder()
                 .fileUploadModel(fileUploadModel)
                 .targetFormat(TargetFormat.PDF)
-                .status(StatusName.SUCCESS)
+                .status(status)
                 .outputPath(output.toString())
                 .createdAt(LocalDateTime.now())
                 .build();

@@ -10,20 +10,19 @@ Essas regras são responsáveis por determinar **como o sistema deve se comporta
 
 ## 1. Regras Gerais
 
-| ID | Regra | Descrição |
-| --- | --- | --- |
-| **RN01** | Tipos de arquivos aceitos | A API deve aceitar apenas arquivos nos formatos `.docx`, `.xlsx`, `.pptx`, `.jpg`, `.jpeg`, `.png`, `.html`, `.txt` e `.csv`. Qualquer outro formato deve gerar erro **415 - Unsupported Media Type**. |
-| **RN02** | Tamanho máximo | O tamanho máximo permitido para upload de arquivo é **10 MB**. Arquivos acima desse limite devem ser rejeitados com erro **413 - Payload Too Large**. |
-| **RN03** | Autenticação obrigatória | Toda solicitação de conversão deve conter um token JWT válido. Requisições sem token devem retornar erro **401 - Unauthorized**. |
-| **RN04** | Tempo de expiração do arquivo | O arquivo convertido deve ser excluído automaticamente do servidor após **5 minutos**. |
-| **RN05** | Download temporário | Caso a conversão gere um link, o mesmo deve ser válido apenas durante o tempo de vida do arquivo (5 minutos). |
-| **RN06** | Validação de entrada | Se o arquivo estiver corrompido, ilegível ou em formato inválido, o sistema deve retornar erro **400 - Bad Request**. |
-| **RN07** | Histórico de conversões | O sistema deve armazenar um histórico de todas as conversões realizadas por cada usuário, incluindo: nome do arquivo, formato de origem, data/hora, status e duração da conversão. |
-| **RN08** | Limite de uso diário | Cada usuário pode realizar até **100 conversões por dia**. Ultrapassando o limite, a API deve retornar erro **429 - Too Many Requests**. |
-| **RN09** | Senhas seguras | As senhas dos usuários devem ser armazenadas com **hash seguro (BCrypt)** e nunca em texto puro. |
-| **RN10** | Logs de auditoria | O sistema deve registrar logs de erros, falhas de autenticação e eventos de conversão bem-sucedidos, contendo data, hora e usuário. |
-| **RN11** | Falha na conversão | Caso a conversão falhe (por formato incompatível ou erro interno), o sistema deve retornar **500 - Internal Server Error** com uma mensagem padronizada. |
-| **RN12** | Resposta padrão da API | Todas as respostas devem seguir o padrão JSON abaixo: |
+| ID | Regra | Descrição                                                                                                                                                                                      |
+| --- | --- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **RN01** | Tipos de arquivos aceitos | A API deve aceitar apenas arquivos nos formatos `.docx`, `.xlsx`, `.pptx`, `.jpg`, `.jpeg`, `.png`, `.html` e `.txt`. Qualquer outro formato deve gerar erro **415 - Unsupported Media Type**. |
+| **RN02** | Tamanho máximo | O tamanho máximo permitido para upload de arquivo é **10 MB**. Arquivos acima desse limite devem ser rejeitados com erro **413 - Payload Too Large**.                                          |
+| **RN03** | Autenticação obrigatória | Toda solicitação de conversão deve conter um token JWT válido. Requisições sem token devem retornar erro **401 - Unauthorized**.                                                               |
+| **RN04** | Tempo de expiração do arquivo | O arquivo convertido deve ser excluído automaticamente do servidor após **5 minutos**.                                                                                                         |
+| **RN05** | Download temporário | Caso a conversão gere um link, o mesmo deve ser válido apenas durante o tempo de vida do arquivo (5 minutos).                                                                                  |
+| **RN06** | Validação de entrada | Se o arquivo estiver corrompido, ilegível ou em formato inválido, o sistema deve retornar erro **400 - Bad Request**.                                                                          |
+| **RN07** | Histórico de conversões | O sistema deve armazenar um histórico de todas as conversões realizadas por cada usuário, incluindo: nome do arquivo, formato de origem, data/hora, status e duração da conversão.             |
+| **RN09** | Senhas seguras | As senhas dos usuários devem ser armazenadas com **hash seguro (BCrypt)** e nunca em texto puro.                                                                                               |
+| **RN10** | Logs de auditoria | O sistema deve registrar logs de erros, falhas de autenticação e eventos de conversão bem-sucedidos, contendo data, hora e usuário.                                                            |
+| **RN11** | Falha na conversão | Caso a conversão falhe (por formato incompatível ou erro interno), o sistema deve retornar **500 - Internal Server Error** com uma mensagem padronizada.                                       |
+| **RN12** | Resposta padrão da API | Todas as respostas devem seguir o padrão JSON abaixo:                                                                                                                                          |
 
 ```json
 {

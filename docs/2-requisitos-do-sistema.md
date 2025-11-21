@@ -19,7 +19,6 @@ Os requisitos funcionais definem **o que o sistema deve fazer** — as funcional
 | **RF05** | Cadastro de usuário | O sistema deve permitir o registro de novos usuários com email e senha. |
 | **RF06** | Histórico de conversões | O sistema deve manter um registro das conversões realizadas por cada usuário. |
 | **RF07** | Exclusão automática | O sistema deve excluir arquivos convertidos após 5 minutos para garantir segurança e economia de espaço. |
-| **RF08** | Limite de uso diário | Cada usuário poderá realizar até **100 conversões por dia** (para simular um modelo freemium). |
 | **RF09** | Retorno de status de conversão | O sistema deve informar o status do processamento (sucesso, erro, formato inválido, tamanho excedido etc.). |
 | **RF10** | Documentação da API | A API deve conter documentação interativa via **Swagger/OpenAPI** acessível publicamente. |
 

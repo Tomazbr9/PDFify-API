@@ -85,6 +85,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponseDTO> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception, HttpServletRequest request){
+        logger.error("Arquivo maior que o limite permitido", exception);
         return buildErrorResponse("Arquivo maior que o limite permitido.", request.getRequestURI(), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
