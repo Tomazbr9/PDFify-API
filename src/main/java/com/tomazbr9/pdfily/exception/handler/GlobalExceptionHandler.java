@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -82,9 +83,9 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(FileSizeException.class)
-    public ResponseEntity<ErrorResponseDTO> handleFileSizeException(FileSizeException exception, HttpServletRequest request){
-        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception, HttpServletRequest request){
+        return buildErrorResponse("Arquivo maior que o limite permitido.", request.getRequestURI(), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(ReadsFileInBytsException.class)
