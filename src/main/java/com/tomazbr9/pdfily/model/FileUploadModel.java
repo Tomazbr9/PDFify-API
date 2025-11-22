@@ -24,7 +24,7 @@ public class FileUploadModel implements Serializable {
     private UUID id;
     private String originalName;
     private String filePath;
-    private Long fileSize;
+    private Double fileSize;
 
     private LocalDateTime createdAt;
 

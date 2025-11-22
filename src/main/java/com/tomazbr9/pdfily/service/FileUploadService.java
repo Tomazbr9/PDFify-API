@@ -57,7 +57,9 @@ public class FileUploadService {
 
         saveFileInDisk(file, filePath);
 
-        FileUploadModel saved = savedFileMetaData(originalFileName, filePath, file.getSize(), user);
+        Double fileSizeInMG = getFileSizeInMB(file.getSize());
+
+        FileUploadModel saved = savedFileMetaData(originalFileName, filePath, fileSizeInMG, user);
 
         logger.info("Arquivo '{}' salvo temporariamente em: {}", originalFileName, filePath);
 
@@ -141,8 +143,12 @@ public class FileUploadService {
         }
     }
 
+    private Double getFileSizeInMB(long fileSizeInByts){
+        return  (double) fileSizeInByts / (1024 * 1024);
+    }
+
     // Salva as informações do arquivo enviao no banco de dados
-    private FileUploadModel savedFileMetaData (String originalName, Path filePath, long size, UserModel user){
+    private FileUploadModel savedFileMetaData (String originalName, Path filePath, Double size, UserModel user){
 
         FileUploadModel fileUploadModel = FileUploadModel.builder()
                 .originalName(originalName)

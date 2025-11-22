@@ -85,6 +85,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DownloadLogNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleDownloadLogNotFoundException(DownloadLogNotFoundException exception, HttpServletRequest request){
+        logger.error("Registro de download não encontrado", exception);
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
     }
 

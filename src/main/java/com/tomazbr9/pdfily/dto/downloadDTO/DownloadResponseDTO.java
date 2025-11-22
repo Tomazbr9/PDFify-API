@@ -6,7 +6,7 @@ import java.util.UUID;
 public record DownloadResponseDTO(
         UUID conversionId,
         String nameFile,
-        long sizeFile,
+        String sizeFile,
         LocalDateTime downloadDate
 
 ) {
