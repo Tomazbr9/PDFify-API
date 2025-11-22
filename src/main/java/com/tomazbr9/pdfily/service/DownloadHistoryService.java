@@ -43,8 +43,6 @@ public class DownloadHistoryService {
 
         saveDownload(conversion, user);
 
-        logger.info("Download salvo no historico com sucesso!");
-
     }
 
     public List<DownloadResponseDTO> getAllDownloadHistory(UserDetails userDetails){
@@ -70,8 +68,6 @@ public class DownloadHistoryService {
         validateIfUserCanDeleteDownloadLog(downloadLog, user);
 
         downloadHistoryRepository.delete(downloadLog);
-
-        logger.info("Registro de Download deletado com sucesso.");
 
     }
 

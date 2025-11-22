@@ -72,6 +72,7 @@ public class ConversionService {
 
             return new ConvertResponseDTO(saved.getId(), saved.getStatus().name());
 
+
         } catch (Exception error) {
             logger.error("Erro ao converter o arquivo: {}", fileUploadModel.getOriginalName(), error);
             ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output, StatusName.FAILURE);

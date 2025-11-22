@@ -43,6 +43,8 @@ public class DownloadHistoryController {
 
         service.saveDownloadToHistory(conversionId, userDetails);
 
+        logger.info("Registro de download salvo com sucesso.");
+
         Path filePath = getFilePath(conversionId);
 
         InputStreamResource resource = convertFileToBytes(filePath);
@@ -63,6 +65,9 @@ public class DownloadHistoryController {
     @GetMapping
     public ResponseEntity<List<DownloadResponseDTO>> getAllDownloadHistory(@AuthenticationPrincipal UserDetails userDetails){
         List<DownloadResponseDTO> response = service.getAllDownloadHistory(userDetails);
+
+        logger.info("Listando todos os registros de download...");
+
         return ResponseEntity.ok(response);
     }
 
@@ -74,6 +79,9 @@ public class DownloadHistoryController {
 
     private Path getFilePath(UUID uuid){
         ConversionModel conversionModel = conversionRepository.findById(uuid).orElseThrow(() -> new ConversionNotFoundException("Conversão não encontrada."));
+
+        logger.info("Registro de Download deletado com sucesso.");
+
         return Path.of(conversionModel.getOutputPath());
     }
 
