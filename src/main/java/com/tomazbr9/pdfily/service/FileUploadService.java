@@ -7,6 +7,7 @@ import com.tomazbr9.pdfily.model.FileUploadModel;
 import com.tomazbr9.pdfily.model.UserModel;
 import com.tomazbr9.pdfily.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

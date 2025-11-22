@@ -83,6 +83,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(DownloadLogNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDownloadLogNotFoundException(DownloadLogNotFoundException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponseDTO> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException exception, HttpServletRequest request){
         logger.error("Arquivo maior que o limite permitido", exception);

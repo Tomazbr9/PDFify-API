@@ -1,5 +1,6 @@
 package com.tomazbr9.pdfily.controller;
 
+import com.tomazbr9.pdfily.dto.downloadDTO.DownloadResponseDTO;
 import com.tomazbr9.pdfily.exception.ConversionNotFoundException;
 import com.tomazbr9.pdfily.exception.FileSizeException;
 import com.tomazbr9.pdfily.exception.ReadsFileInBytsException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -56,6 +58,18 @@ public class DownloadHistoryController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
 
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DownloadResponseDTO>> getAllDownloadHistory(@AuthenticationPrincipal UserDetails userDetails){
+        List<DownloadResponseDTO> response = service.getAllDownloadHistory(userDetails);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{downloadId}")
+    public ResponseEntity<Void> deleteDownloadLog(@PathVariable UUID downloadId, @AuthenticationPrincipal UserDetails userDetails){
+        service.deleteDownloadLog(downloadId, userDetails);
+        return ResponseEntity.noContent().build();
     }
 
     private Path getFilePath(UUID uuid){

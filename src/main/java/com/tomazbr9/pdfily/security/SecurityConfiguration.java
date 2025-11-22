@@ -34,7 +34,8 @@ public class SecurityConfiguration {
 
             "/api/v1/convert",
 
-            "/api/v1/download/start/**"
+            "/api/v1/download/start/**",
+            "/api/v1/download/**"
 
 
     };
