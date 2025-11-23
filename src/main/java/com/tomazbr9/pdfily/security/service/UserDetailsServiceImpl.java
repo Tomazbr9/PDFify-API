@@ -1,7 +1,7 @@
 package com.tomazbr9.pdfily.security.service;
 
-import com.tomazbr9.pdfily.model.UserModel;
-import com.tomazbr9.pdfily.repository.UserRepository;
+import com.tomazbr9.pdfily.user.model.UserModel;
+import com.tomazbr9.pdfily.user.repository.UserRepository;
 import com.tomazbr9.pdfily.security.model.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package com.tomazbr9.pdfily.security.model;
 
-import com.tomazbr9.pdfily.model.UserModel;
+import com.tomazbr9.pdfily.user.model.UserModel;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,8 +1,8 @@
 package com.tomazbr9.pdfily.security.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.tomazbr9.pdfily.model.UserModel;
-import com.tomazbr9.pdfily.repository.UserRepository;
+import com.tomazbr9.pdfily.user.model.UserModel;
+import com.tomazbr9.pdfily.user.repository.UserRepository;
 import com.tomazbr9.pdfily.security.SecurityConfiguration;
 import com.tomazbr9.pdfily.security.jwt.JwtTokenService;
 import com.tomazbr9.pdfily.security.model.UserDetailsImpl;

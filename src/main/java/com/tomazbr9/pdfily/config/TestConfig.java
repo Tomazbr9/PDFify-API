@@ -1,8 +1,8 @@
 package com.tomazbr9.pdfily.config;
 
 import com.tomazbr9.pdfily.enums.RoleName;
-import com.tomazbr9.pdfily.model.RoleModel;
-import com.tomazbr9.pdfily.repository.RoleRepository;
+import com.tomazbr9.pdfily.role.model.RoleModel;
+import com.tomazbr9.pdfily.role.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
