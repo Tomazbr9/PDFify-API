@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.tomazbr9.pdfily.fileupload.service.util.FileNamingUtil;
+import com.tomazbr9.pdfily.util.FileNamingUtil;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;

@@ -2,44 +2,35 @@ package com.tomazbr9.pdfily.conversion.service;
 
 import com.tomazbr9.pdfily.dto.conversionDTO.ConvertRequestDTO;
 import com.tomazbr9.pdfily.dto.conversionDTO.ConvertResponseDTO;
-import com.tomazbr9.pdfily.enums.StatusName;
-import com.tomazbr9.pdfily.enums.TargetFormat;
 import com.tomazbr9.pdfily.exception.*;
 import com.tomazbr9.pdfily.conversion.model.ConversionModel;
 import com.tomazbr9.pdfily.fileupload.model.FileUploadModel;
 import com.tomazbr9.pdfily.user.model.UserModel;
-import com.tomazbr9.pdfily.conversion.repository.ConversionRepository;
 import com.tomazbr9.pdfily.fileupload.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.user.repository.UserRepository;
+import com.tomazbr9.pdfily.util.FileNamingUtil;
 import jakarta.transaction.Transactional;
-import org.jodconverter.core.DocumentConverter;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-@DependsOn("officeManager")
 public class ConversionService {
 
-    @Autowired
-    DocumentConverter converter;
+    @Autowired FileUploadRepository fileUploadRepository;
 
-    @Autowired
-    FileUploadRepository fileUploadRepository;
+    @Autowired UserRepository userRepository;
 
-    @Autowired
-    ConversionRepository conversionRepository;
+    @Autowired ConversionValidationService conversionValidationService;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired ConversionEngineService conversionEngineService;
+
+    @Autowired ConversionMetadataFactory conversionMetadataFactory;
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConversionService.class);
 
@@ -50,23 +41,21 @@ public class ConversionService {
 
         UserModel user = getUser(userDetails.getUsername());
 
-        validatedIfFileBelongsAuthenticatedUser(fileUploadModel, user);
+        conversionValidationService.validatedIfFileBelongsAuthenticatedUser(fileUploadModel, user);
 
         Path input = Paths.get(fileUploadModel.getFilePath());
 
-        validateFileExists(input);
+        conversionValidationService.validateFileExists(input);
 
-        String outputFilename = generateSafeFilenamePDF();
+        String outputFilename = FileNamingUtil.generateSafeFilename("pdf");
 
         Path output = input.getParent().resolve(outputFilename);
 
         try {
-            converter.convert(
-                    input.toFile())
-                    .to(output.toFile())
-                    .execute();
 
-            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output, StatusName.SUCCESS);
+            conversionEngineService.convert(input, output);
+
+            ConversionModel saved = conversionMetadataFactory.createSuccess(fileUploadModel, output);
 
             logger.info("Arquivo {} convertido com sucesso.", output);
 
@@ -75,7 +64,7 @@ public class ConversionService {
 
         } catch (Exception error) {
             logger.error("Erro ao converter o arquivo: {}", fileUploadModel.getOriginalName(), error);
-            ConversionModel saved = savedConvertedFileMetaData(fileUploadModel, output, StatusName.FAILURE);
+            conversionMetadataFactory.createFailure(fileUploadModel, output);
             throw new ConvertingFileException("Erro ao converter arquivo.");
         }
     }
@@ -86,39 +75,6 @@ public class ConversionService {
 
     private UserModel getUser(String username){
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
-    }
-
-    private void validatedIfFileBelongsAuthenticatedUser(FileUploadModel fileUploadModel, UserModel user) {
-        String username = fileUploadModel.getUser().getUsername();
-        if (!username.equals(user.getUsername())){
-            logger.info("Usuário {} sem permissão para converter arquivo.", user.getUsername());
-            throw new ResourceDoesNotBelongToTheAuthenticatedUser("Você não tem permissão para converter esse arquivo");
-        }
-    }
-
-    private void validateFileExists(Path input){
-        if (!Files.exists(input)) {
-            logger.error("Arquivo temporário expirado ou inexistente");
-            throw new ExpiredOrNonExistentFile("Arquivo temporário expirado ou inexistente.");
-        }
-    }
-
-    private String generateSafeFilenamePDF(){
-        return UUID.randomUUID().toString() + ".pdf";
-    }
-
-    private ConversionModel savedConvertedFileMetaData(FileUploadModel fileUploadModel, Path output, StatusName status){
-
-        ConversionModel conversionModel = ConversionModel.builder()
-                .fileUploadModel(fileUploadModel)
-                .targetFormat(TargetFormat.PDF)
-                .status(status)
-                .outputPath(output.toString())
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        return conversionRepository.save(conversionModel);
-
     }
 
 

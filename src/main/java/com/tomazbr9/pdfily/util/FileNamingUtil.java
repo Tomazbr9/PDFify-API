@@ -1,4 +1,4 @@
-package com.tomazbr9.pdfily.fileupload.service.util;
+package com.tomazbr9.pdfily.util;
 
 import com.tomazbr9.pdfily.enums.TargetFormat;
 import com.tomazbr9.pdfily.exception.UnsupportedFileFormatException;
