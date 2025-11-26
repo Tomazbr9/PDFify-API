@@ -32,6 +32,12 @@ public class DownloadHistoryService {
     @Autowired
     DownloadHistoryRepository downloadHistoryRepository;
 
+    @Autowired
+    DownloadValidationService downloadValidationService;
+
+    @Autowired
+    DownloadHistorySavingService downloadHistorySavingService;
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DownloadHistoryService.class);
 
     public void saveDownloadToHistory(UUID conversionId, UserDetails userDetails){
@@ -39,9 +45,9 @@ public class DownloadHistoryService {
         ConversionModel conversion = getConversion(conversionId);
         UserModel user = getUser(userDetails.getUsername());
 
-        validateIfUserCanDownload(conversion, user);
+        downloadValidationService.validateIfUserCanDownload(conversion, user);
 
-        saveDownload(conversion, user);
+        downloadHistorySavingService.saveDownload(conversion, user);
 
     }
 
@@ -65,7 +71,7 @@ public class DownloadHistoryService {
         UserModel user = getUser(userDetails.getUsername());
         DownloadHistoryModel downloadLog = getDownloadLog(downloadLogId);
 
-        validateIfUserCanDeleteDownloadLog(downloadLog, user);
+        downloadValidationService.validateIfUserCanDeleteDownloadLog(downloadLog, user);
 
         downloadHistoryRepository.delete(downloadLog);
 
@@ -81,34 +87,6 @@ public class DownloadHistoryService {
 
     private DownloadHistoryModel getDownloadLog(UUID uuid){
         return downloadHistoryRepository.findById(uuid).orElseThrow(() -> new DownloadLogNotFoundException("Registro de download não encontrado."));
-    }
-
-    private void validateIfUserCanDownload(ConversionModel conversion, UserModel user){
-        String username = conversion.getFileUploadModel().getUser().getUsername();
-        if(!username.equals(user.getUsername())){
-            logger.warn("Usuário {} tentou baixar um arquivo que pertence a {} ", username, user.getUsername());
-            throw new ResourceDoesNotBelongToTheAuthenticatedUser("Usuário sem permissão para fazer download do arquivo");
-        }
-    }
-
-    private void validateIfUserCanDeleteDownloadLog(DownloadHistoryModel downloadLog, UserModel user){
-        String username = downloadLog.getUser().getUsername();
-        if(!username.equals(user.getUsername())){
-            logger.warn("Usuário {} tentou deletar um arquivo que pertence a {} ", username, user.getUsername());
-            throw new ResourceDoesNotBelongToTheAuthenticatedUser("Usuário sem permissão para deletar registro de download");
-        }
-    }
-
-    private void saveDownload(ConversionModel conversion, UserModel user){
-
-        DownloadHistoryModel downloadHistoryModel = DownloadHistoryModel.builder()
-                .conversion(conversion)
-                .user(user)
-                .downloadedAt(LocalDateTime.now())
-                .build();
-
-        downloadHistoryRepository.save(downloadHistoryModel);
-
     }
 
 
