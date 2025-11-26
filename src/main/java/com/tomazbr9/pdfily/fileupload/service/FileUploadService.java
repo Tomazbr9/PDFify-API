@@ -33,6 +33,9 @@ public class FileUploadService {
     @Autowired
     FileStorageService fileStorageService;
 
+    @Autowired
+    FilePathGeneratorService filePathGeneratorService;
+
     private static final Logger logger = LoggerFactory.getLogger(FileUploadService.class);
 
     @Value("${pdfily.upload.temp-dir}")
@@ -44,15 +47,15 @@ public class FileUploadService {
 
         String originalFileName = fileValidationService.validateAndGetOriginalName(file);
 
-
         UserModel user = getUser(userDetails.getUsername());
 
         String extension = FileNamingUtil.getSafeExtension(originalFileName);
 
         String newFileName = FileNamingUtil.generateSafeFilename(extension);
 
-        Path dirPath = Path.of(uploadDir);
-        Path filePath = dirPath.resolve(newFileName);
+        Path dirPath = filePathGeneratorService.transformInPath(uploadDir);
+
+        Path filePath = filePathGeneratorService.generatePath(dirPath, newFileName);
 
         fileStorageService.createDirectoryIfNeeded(dirPath);
 
