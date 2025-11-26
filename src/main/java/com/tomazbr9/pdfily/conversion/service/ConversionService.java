@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -55,11 +56,13 @@ public class ConversionService {
 
             conversionEngineService.convert(input, output);
 
-            ConversionModel saved = conversionMetadataFactory.createSuccess(fileUploadModel, output);
+            Double SizeFileInMG = FileNamingUtil.calculateFileSizeInMB(Files.size(output));
+
+            ConversionModel saved = conversionMetadataFactory.createSuccess(fileUploadModel, outputFilename, output, SizeFileInMG);
 
             logger.info("Arquivo {} convertido com sucesso.", output);
 
-            return new ConvertResponseDTO(saved.getId(), saved.getStatus().name());
+            return new ConvertResponseDTO(saved.getId(), outputFilename, saved.getStatus().name());
 
 
         } catch (Exception error) {

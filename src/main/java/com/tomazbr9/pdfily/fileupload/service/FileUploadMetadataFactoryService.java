@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 
 @Service
-public class ConversionMetadataFactoryService {
+public class FileUploadMetadataFactoryService {
 
     @Autowired
     FileUploadRepository fileUploadRepository;

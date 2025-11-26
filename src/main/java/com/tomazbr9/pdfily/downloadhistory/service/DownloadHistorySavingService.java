@@ -6,9 +6,11 @@ import com.tomazbr9.pdfily.downloadhistory.repository.DownloadHistoryRepository;
 import com.tomazbr9.pdfily.user.model.UserModel;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class DownloadHistorySavingService {
 
     @Autowired

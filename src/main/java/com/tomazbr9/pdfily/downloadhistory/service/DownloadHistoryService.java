@@ -59,8 +59,8 @@ public class DownloadHistoryService {
         return downloadList.stream()
                 .map(downloadLog -> new DownloadResponseDTO(
                         downloadLog.getId(),
-                        downloadLog.getConversion().getFileUploadModel().getOriginalName(),
-                        String.valueOf(downloadLog.getConversion().getFileUploadModel().getFileSize() + " MB"),
+                        downloadLog.getConversion().getConvertedFileName(),
+                        String.valueOf(downloadLog.getConversion().getSize() + " MB"),
                         downloadLog.getDownloadedAt()
                 )).toList();
 

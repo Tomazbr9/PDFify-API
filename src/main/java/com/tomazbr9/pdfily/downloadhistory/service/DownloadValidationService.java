@@ -5,7 +5,9 @@ import com.tomazbr9.pdfily.downloadhistory.model.DownloadHistoryModel;
 import com.tomazbr9.pdfily.exception.ResourceDoesNotBelongToTheAuthenticatedUser;
 import com.tomazbr9.pdfily.user.model.UserModel;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DownloadValidationService {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DownloadValidationService.class);

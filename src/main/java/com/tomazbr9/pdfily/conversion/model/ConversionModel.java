@@ -27,11 +27,15 @@ public class ConversionModel {
     @JoinColumn(name = "tb_file_upload", nullable = false)
     private FileUploadModel fileUploadModel;
 
+    private String convertedFileName;
+
     @Enumerated(EnumType.STRING)
     private TargetFormat targetFormat;
 
     @Enumerated(EnumType.STRING)
     private StatusName status;
+
+    private Double size;
 
     private String outputPath;
     private LocalDateTime createdAt;

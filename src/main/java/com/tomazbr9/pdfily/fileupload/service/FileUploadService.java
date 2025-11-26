@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.tomazbr9.pdfily.util.FileNamingUtil;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
@@ -25,7 +26,7 @@ public class FileUploadService {
     UserRepository userRepository;
 
     @Autowired
-    FileUploadRepository fileUploadRepository;
+    FileUploadMetadataFactoryService fileUploadMetadataFactoryService;
 
     @Autowired
     FileValidationService fileValidationService;
@@ -63,7 +64,7 @@ public class FileUploadService {
 
         Double fileSizeInMG = FileNamingUtil.calculateFileSizeInMB(file.getSize());
 
-        FileUploadModel saved = savedFileMetaData(originalFileName, filePath, fileSizeInMG, user);
+        FileUploadModel saved = fileUploadMetadataFactoryService.savedFileMetaData(originalFileName, filePath, fileSizeInMG, user);
 
         logger.info("Arquivo '{}' salvo temporariamente em: {}", originalFileName, filePath);
 
@@ -79,19 +80,5 @@ public class FileUploadService {
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado."));
     }
 
-    // Salva as informações do arquivo enviao no banco de dados
-    private FileUploadModel savedFileMetaData (String originalName, Path filePath, Double size, UserModel user){
-
-        FileUploadModel fileUploadModel = FileUploadModel.builder()
-                .originalName(originalName)
-                .filePath(filePath.toString())
-                .fileSize(size)
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .build();
-
-        return fileUploadRepository.save(fileUploadModel);
-
-    }
 
 }

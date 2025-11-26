@@ -16,12 +16,14 @@ public class ConversionMetadataFactory {
 
     @Autowired ConversionRepository conversionRepository;
 
-    public ConversionModel createSuccess(FileUploadModel fileUploadModel, Path output){
+    public ConversionModel createSuccess(FileUploadModel fileUploadModel, String outputFilename, Path output, Double sizeFileInMG){
 
         ConversionModel conversionModel = ConversionModel.builder()
                 .fileUploadModel(fileUploadModel)
+                .convertedFileName(outputFilename)
                 .targetFormat(TargetFormat.PDF)
                 .status(StatusName.SUCCESS)
+                .size(sizeFileInMG)
                 .outputPath(output.toString())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -30,7 +32,7 @@ public class ConversionMetadataFactory {
 
     }
 
-    public ConversionModel createFailure(FileUploadModel fileUploadModel, Path output){
+    public void createFailure(FileUploadModel fileUploadModel, Path output){
 
         ConversionModel conversionModel = ConversionModel.builder()
                 .fileUploadModel(fileUploadModel)
@@ -39,8 +41,6 @@ public class ConversionMetadataFactory {
                 .outputPath(output.toString())
                 .createdAt(LocalDateTime.now())
                 .build();
-
-        return conversionRepository.save(conversionModel);
 
     }
 
