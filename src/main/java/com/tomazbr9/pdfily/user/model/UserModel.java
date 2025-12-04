@@ -30,7 +30,6 @@ public class UserModel implements Serializable {
     @GeneratedValue
     private UUID id;
     private String username;
-    private String email;
     private String password;
 
     private LocalDate created_at;

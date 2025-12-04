@@ -1,14 +1,15 @@
 package com.tomazbr9.pdfily.dto.userDTO;
 
-import com.tomazbr9.pdfily.enums.RoleName;
 import jakarta.validation.constraints.NotBlank;
 
-public record UserRequestDTO(
+public record UserPutDTO(
 
         @NotBlank(message = "O nome de usuário é obrigatório")
         String username,
 
         @NotBlank(message = "A senha é obrigatória")
-        String password,
-        RoleName role
-) {}
+        String password
+) {
+
+
+}
