@@ -100,6 +100,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExistsException (UsernameAlreadyExistsException exception, HttpServletRequest request){
+        return buildErrorResponse(exception.getMessage(), request.getRequestURI(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(ConversionNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleConversionNotFoundException(ConversionNotFoundException exception, HttpServletRequest request){
         logger.warn("Conversão não encontrada.");
