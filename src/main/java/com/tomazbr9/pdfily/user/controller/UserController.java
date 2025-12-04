@@ -21,18 +21,20 @@ public class UserController {
     @GetMapping
     public ResponseEntity<UserResponseDTO> userData(@AuthenticationPrincipal UserDetails userDetails){
         UserResponseDTO response = service.userData(userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok().body(response);
 
     }
 
     @PutMapping
     public ResponseEntity<UserResponseDTO> userPut(@RequestBody UserPutDTO request, @AuthenticationPrincipal UserDetails userDetails){
         UserResponseDTO response = service.userPut(request, userDetails);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> userDelete(@AuthenticationPrincipal UserDetails userDetails){
+        service.userDelete(userDetails);
+        return ResponseEntity.noContent().build();
 
     }
 

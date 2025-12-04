@@ -36,6 +36,8 @@ public class UserService {
 
         UserModel userModel = userValidationsService.getUser(userDetails.getPassword());
 
+        userValidationsService.verifyIfUsernameExists(userDetails.getUsername());
+
         userModel.setUsername(request.username());
         userModel.setUsername(request.password());
 
@@ -43,6 +45,13 @@ public class UserService {
 
         return new UserResponseDTO(updatedUser.getUsername());
 
+    }
+
+    public void userDelete(UserDetails userDetails){
+
+        UserModel userModel = userValidationsService.getUser(userDetails.getUsername());
+
+        userRepository.delete(userModel);
     }
 
 }
