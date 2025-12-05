@@ -38,7 +38,7 @@ public class DownloadHistoryController {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DownloadHistoryController.class);
 
-    @GetMapping("/start/{conversionId}")
+    @GetMapping("/{conversionId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable UUID conversionId, @AuthenticationPrincipal UserDetails userDetails){
 
         service.saveDownloadToHistory(conversionId, userDetails);

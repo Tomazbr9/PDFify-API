@@ -17,7 +17,7 @@ public class ConversionController {
     @Autowired
     private ConversionService service;
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConversionService.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ConversionController.class);
 
     @PostMapping
     public ResponseEntity<ConvertResponseDTO> convert(@RequestBody ConvertRequestDTO request, @AuthenticationPrincipal UserDetails userDetails){

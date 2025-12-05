@@ -7,7 +7,9 @@ import com.tomazbr9.pdfily.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserValidationsService {
 
     @Autowired
@@ -17,7 +19,7 @@ public class UserValidationsService {
 
     public void verifyIfUsernameExists(String username){
 
-        if (!userRepository.existsByUsername(username)){
+        if (userRepository.existsByUsername(username)){
             logger.warn("Nome de usuário já existe.");
             throw new UsernameAlreadyExistsException("Nome de usuário já existe");
         }
@@ -26,6 +28,8 @@ public class UserValidationsService {
 
 
     public UserModel getUser(String username){
+
+        logger.info("Usuário: {} solicitou suas informações", username);
 
         return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }

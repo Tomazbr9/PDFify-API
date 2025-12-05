@@ -10,6 +10,7 @@ import com.tomazbr9.pdfily.user.repository.UserRepository;
 import com.tomazbr9.pdfily.security.SecurityConfiguration;
 import com.tomazbr9.pdfily.security.jwt.JwtTokenService;
 import com.tomazbr9.pdfily.security.model.UserDetailsImpl;
+import com.tomazbr9.pdfily.user.service.UserValidationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +37,12 @@ public class AuthService {
     @Autowired
     private SecurityConfiguration securityConfiguration;
 
+    @Autowired
+    private UserValidationsService userValidationsService;
+
     public void registerUser(UserRequestDTO request){
+
+        userValidationsService.verifyIfUsernameExists(request.username());
 
         RoleModel role = roleRepository.findByName(request.role()).orElseThrow(() -> new RuntimeException("Papel não encontrado"));
 

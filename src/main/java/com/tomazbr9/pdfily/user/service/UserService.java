@@ -5,6 +5,7 @@ import com.tomazbr9.pdfily.dto.userDTO.UserResponseDTO;
 import com.tomazbr9.pdfily.exception.UserNotFoundException;
 import com.tomazbr9.pdfily.exception.UsernameAlreadyExistsException;
 import com.tomazbr9.pdfily.fileupload.service.FileStorageService;
+import com.tomazbr9.pdfily.security.SecurityConfiguration;
 import com.tomazbr9.pdfily.user.model.UserModel;
 import com.tomazbr9.pdfily.user.repository.UserRepository;
 import org.slf4j.Logger;
@@ -22,6 +23,9 @@ public class UserService {
     @Autowired
     private UserValidationsService userValidationsService;
 
+    @Autowired
+    private SecurityConfiguration securityConfiguration;
+
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserResponseDTO userData(UserDetails userDetails){
@@ -34,12 +38,14 @@ public class UserService {
 
     public UserResponseDTO userPut(UserPutDTO request, UserDetails userDetails){
 
-        UserModel userModel = userValidationsService.getUser(userDetails.getPassword());
+        UserModel userModel = userValidationsService.getUser(userDetails.getUsername());
 
-        userValidationsService.verifyIfUsernameExists(userDetails.getUsername());
+        if (!request.username().equals(userDetails.getUsername())){
+            userValidationsService.verifyIfUsernameExists(request.username());
+        }
 
         userModel.setUsername(request.username());
-        userModel.setUsername(request.password());
+        userModel.setPassword(securityConfiguration.passwordEncoder().encode(request.password()));
 
         UserModel updatedUser = userRepository.save(userModel);
 
