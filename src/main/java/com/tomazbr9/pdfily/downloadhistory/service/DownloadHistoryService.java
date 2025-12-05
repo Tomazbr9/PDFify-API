@@ -1,9 +1,9 @@
 package com.tomazbr9.pdfily.downloadhistory.service;
 
+import com.tomazbr9.pdfily.dto.downloadDTO.DownloadFileDTO;
 import com.tomazbr9.pdfily.dto.downloadDTO.DownloadResponseDTO;
 import com.tomazbr9.pdfily.exception.ConversionNotFoundException;
 import com.tomazbr9.pdfily.exception.DownloadLogNotFoundException;
-import com.tomazbr9.pdfily.exception.ResourceDoesNotBelongToTheAuthenticatedUser;
 import com.tomazbr9.pdfily.exception.UserNotFoundException;
 import com.tomazbr9.pdfily.conversion.model.ConversionModel;
 import com.tomazbr9.pdfily.downloadhistory.model.DownloadHistoryModel;
@@ -11,12 +11,16 @@ import com.tomazbr9.pdfily.user.model.UserModel;
 import com.tomazbr9.pdfily.conversion.repository.ConversionRepository;
 import com.tomazbr9.pdfily.downloadhistory.repository.DownloadHistoryRepository;
 import com.tomazbr9.pdfily.user.repository.UserRepository;
+
+import com.tomazbr9.pdfily.util.FileUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,16 +42,27 @@ public class DownloadHistoryService {
     @Autowired
     DownloadHistorySavingService downloadHistorySavingService;
 
+    @Autowired
+    DownloadPreparationService downloadPreparationService;
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DownloadHistoryService.class);
 
-    public void saveDownloadToHistory(UUID conversionId, UserDetails userDetails){
+    public DownloadFileDTO saveDownloadToHistory(UUID conversionId, UserDetails userDetails){
 
         ConversionModel conversion = getConversion(conversionId);
         UserModel user = getUser(userDetails.getUsername());
 
         downloadValidationService.validateIfUserCanDownload(conversion, user);
 
+        Path filePath = Path.of(conversion.getOutputPath());
+
+        InputStreamResource resource = downloadPreparationService.convertFileToBytes(filePath);
+        HttpHeaders headers = downloadPreparationService.configureHeadersHttp(filePath.getFileName().toString());
+        long fileSize = FileUtil.getSizeInBytes(filePath);
+
         downloadHistorySavingService.saveDownload(conversion, user);
+
+        return new DownloadFileDTO(resource, headers, fileSize);
 
     }
 
@@ -60,7 +75,7 @@ public class DownloadHistoryService {
                 .map(downloadLog -> new DownloadResponseDTO(
                         downloadLog.getId(),
                         downloadLog.getConversion().getConvertedFileName(),
-                        String.valueOf(downloadLog.getConversion().getSize() + " MB"),
+                        downloadLog.getConversion().getSize() + " MB",
                         downloadLog.getDownloadedAt()
                 )).toList();
 

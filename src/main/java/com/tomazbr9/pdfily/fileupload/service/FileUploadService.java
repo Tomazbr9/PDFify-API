@@ -4,7 +4,6 @@ import com.tomazbr9.pdfily.dto.fileDTO.FileResponseDTO;
 import com.tomazbr9.pdfily.exception.*;
 import com.tomazbr9.pdfily.fileupload.model.FileUploadModel;
 import com.tomazbr9.pdfily.user.model.UserModel;
-import com.tomazbr9.pdfily.fileupload.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.tomazbr9.pdfily.util.FileNamingUtil;
+import com.tomazbr9.pdfily.util.FileUtil;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 
 @Service
 public class FileUploadService {
@@ -50,9 +47,9 @@ public class FileUploadService {
 
         UserModel user = getUser(userDetails.getUsername());
 
-        String extension = FileNamingUtil.getSafeExtension(originalFileName);
+        String extension = FileUtil.getSafeExtension(originalFileName);
 
-        String newFileName = FileNamingUtil.generateSafeFilename(extension);
+        String newFileName = FileUtil.generateSafeFilename(extension);
 
         Path dirPath = filePathGeneratorService.transformInPath(uploadDir);
 
@@ -62,7 +59,7 @@ public class FileUploadService {
 
         fileStorageService.saveFileInDisk(file, filePath);
 
-        Double fileSizeInMG = FileNamingUtil.calculateFileSizeInMB(file.getSize());
+        Double fileSizeInMG = FileUtil.calculateFileSizeInMB(file.getSize());
 
         FileUploadModel saved = fileUploadMetadataFactoryService.savedFileMetaData(originalFileName, filePath, fileSizeInMG, user);
 

@@ -8,7 +8,7 @@ import com.tomazbr9.pdfily.fileupload.model.FileUploadModel;
 import com.tomazbr9.pdfily.user.model.UserModel;
 import com.tomazbr9.pdfily.fileupload.repository.FileUploadRepository;
 import com.tomazbr9.pdfily.user.repository.UserRepository;
-import com.tomazbr9.pdfily.util.FileNamingUtil;
+import com.tomazbr9.pdfily.util.FileUtil;
 import jakarta.transaction.Transactional;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class ConversionService {
 
         conversionValidationService.validateFileExists(input);
 
-        String outputFilename = FileNamingUtil.generateSafeFilename("pdf");
+        String outputFilename = FileUtil.generateSafeFilename("pdf");
 
         Path output = input.getParent().resolve(outputFilename);
 
@@ -56,7 +56,7 @@ public class ConversionService {
 
             conversionEngineService.convert(input, output);
 
-            Double SizeFileInMG = FileNamingUtil.calculateFileSizeInMB(Files.size(output));
+            Double SizeFileInMG = FileUtil.calculateFileSizeInMB(Files.size(output));
 
             ConversionModel saved = conversionMetadataFactory.createSuccess(fileUploadModel, outputFilename, output, SizeFileInMG);
 

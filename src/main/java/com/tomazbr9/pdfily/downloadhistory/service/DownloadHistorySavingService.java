@@ -3,6 +3,7 @@ package com.tomazbr9.pdfily.downloadhistory.service;
 import com.tomazbr9.pdfily.conversion.model.ConversionModel;
 import com.tomazbr9.pdfily.downloadhistory.model.DownloadHistoryModel;
 import com.tomazbr9.pdfily.downloadhistory.repository.DownloadHistoryRepository;
+import com.tomazbr9.pdfily.dto.downloadDTO.DownloadResponseDTO;
 import com.tomazbr9.pdfily.user.model.UserModel;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
