@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -87,8 +88,16 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     // Verifica se o endpoint está em uma lista de rotas públicas (sem autenticação)
     private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        return !Arrays.asList(SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED)
-                .contains(requestURI);
+        // Verifica se URI atual bate com algum endpoint público
+        for (String publicEndpoint : SecurityConfiguration.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED) {
+            if (pathMatcher.match(publicEndpoint, requestURI)) {
+                return false;
+            }
+        }
+
+        // Caso contrário, exige autenticação
+        return true;
     }
 }
