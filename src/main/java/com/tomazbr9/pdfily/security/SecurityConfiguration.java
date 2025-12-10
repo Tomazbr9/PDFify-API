@@ -28,6 +28,8 @@ public class SecurityConfiguration {
 
             "/swagger-ui/**",
             "/v3/api-docs/**",
+
+            "/actuator/**"
     };
 
     // Endpoints que exigem perfil de Usuário
