@@ -1,11 +1,13 @@
 version: "3.9"
 
 services:
+
   backend:
     build: .
-    container_name: PDFily
+    container_name: pdfily
     ports:
       - "8080:8080"
+      - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
@@ -14,7 +16,25 @@ services:
     depends_on:
       - db
     networks:
-      - backend-net
+      - monitor-net
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor-net
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - monitor-net
 
   db:
     image: postgres:15
@@ -29,10 +49,10 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - backend-net
+      - monitor-net
 
 volumes:
   pgdata:
 
 networks:
-  backend-net:
+  monitor-net:
