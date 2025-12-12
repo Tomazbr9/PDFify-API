@@ -19,7 +19,8 @@ public class RoleModel implements Serializable {
     private static final long seriaVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
     private UUID id;
 
     @Enumerated(EnumType.STRING)

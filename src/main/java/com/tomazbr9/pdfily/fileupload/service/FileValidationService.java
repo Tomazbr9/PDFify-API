@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Paths;
+
 @Service
 public class FileValidationService {
 
@@ -25,7 +27,9 @@ public class FileValidationService {
             throw new InvalidFileNameException("Arquivo sem nome.");
         }
 
-        return originalName;
+        return Paths.get(originalName).getFileName().toString();
+
+
 
     }
 
