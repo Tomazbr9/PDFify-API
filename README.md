@@ -178,9 +178,6 @@ POSTGRES_PASSWORD=senha123
 SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/pdfily
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=senha123
-
-# JWT
-SECRET_KEY=chave-secreta-jwt
 ```
 
 ---
