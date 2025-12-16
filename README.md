@@ -292,6 +292,28 @@ O Grafana é utilizado para visualizar as métricas através de dashboards inter
 
 ---
 
+## ⏱ Limpeza Automática de Arquivos Temporários (Scheduler)
+
+O **PDFily API** utiliza o **Spring Scheduler** para realizar a **limpeza automática de arquivos temporários** em intervalos regulares.
+
+### Como funciona
+
+* Um job agendado é executado **a cada 5 minutos**
+* Arquivos temporários antigos são removidos do sistema de arquivos
+* Evita acúmulo de arquivos desnecessários em disco
+* Melhora performance e uso de armazenamento
+
+### Benefícios
+
+* 🧹 Gerenciamento automático de arquivos temporários
+* 📉 Redução de uso de espaço em disco
+* ⚙️ Processo totalmente automatizado
+* 🚀 Aplicação preparada para uso contínuo em produção
+
+Essa abordagem garante que o sistema mantenha apenas os arquivos necessários, sem intervenção manual.
+
+---
+
 ## 🧪 Testes
 
 O projeto possui testes utilizando:
