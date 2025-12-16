@@ -45,26 +45,18 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    // OBS: Removi UserAuthenticationFilter e JwtTokenService pois
-    // com addFilters=false eles não são necessários aqui.
-
     private UserResponseDTO userResponse;
     private UserPutDTO updateDTO;
     private UserDetailsImpl userDetails;
 
     @BeforeEach
     void setUp() {
-        // 2. IMPORTANTE: Garanta que UserResponseDTO tenha GETTERS ou @Data (Lombok)
         userResponse = new UserResponseDTO("bruno");
         updateDTO = new UserPutDTO("novoBruno", "novaSenha");
 
         userDetails = Mockito.mock(UserDetailsImpl.class);
         Mockito.when(userDetails.getUsername()).thenReturn("bruno");
     }
-
-    // --------------------------------------------------------
-    // GET /api/v1/user
-    // --------------------------------------------------------
 
     @Test
     void shouldReturnAuthenticatedUser() throws Exception {
@@ -78,9 +70,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.username").value("bruno"));
     }
 
-    // --------------------------------------------------------
-    // PUT /api/v1/user
-    // --------------------------------------------------------
 
     @Test
     void shouldUpdateUserSuccessfully() throws Exception {
@@ -91,17 +80,13 @@ class UserControllerTest {
 
         mockMvc.perform(put("/api/v1/user")
                         .with(user("bruno").roles("USER"))
-                        .with(csrf()) // Boa prática manter
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("novoBruno"));
     }
-
-    // --------------------------------------------------------
-    // DELETE /api/v1/user
-    // --------------------------------------------------------
 
     @Test
     void shouldDeleteUserSuccessfully() throws Exception {
